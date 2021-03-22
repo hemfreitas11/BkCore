@@ -48,6 +48,7 @@ public abstract class BkPlugin extends JavaPlugin {
         if (hasHandler()) setNmsHandler();
 
         return getCommandMapper();
+
     }
 
     public final void addLanguage(String language) {
