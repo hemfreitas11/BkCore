@@ -8,6 +8,7 @@ public enum InternalMessages {
     ESSCOPYWARPS("[{0}] New warps in Essentials detected, importing..."),
     ESSCOPYDONE("[{0}] Finished importing."),
     MATERIALNOTFOUND("The material {0} was not found... Using dirt instead."),
+    ERRORX9("The plugin encountered an error! Code: 2Q5f139z Join discord.gg/2MHgyjCuPc and report this as soon as possible"),
     INCOMPATIBLEVERSION("Server versions bellow 1.8 are not supported and will NOT work, you have been warned");
 
     private final String message;

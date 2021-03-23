@@ -27,28 +27,31 @@ public abstract class BkPlugin extends JavaPlugin {
     private NMS nmsApi;
     private boolean hasHandler = false;
     private ArrayList<String> langList;
+    private boolean enabled;
 
     public final CommandMapper start() {
         return start(false);
     }
 
     public final CommandMapper start(boolean hasHandler) {
-        getConfig();
-        this.hasHandler = hasHandler;
-        if (langList == null) this.langList = new ArrayList<>();
+        try {
+            getConfig();
+            this.hasHandler = hasHandler;
+            if (langList == null) this.langList = new ArrayList<>();
 
-        langList.add("en_US");
-        langList.add("pt_BR");
+            langList.add("en_US");
+            langList.add("pt_BR");
+            enabled = true;
 
-        langFile = new LangFile(this, langList);
-        commandMapper = new CommandMapper(this);
-        nmsVersion = new NMSVersion();
-        if (nmsVersion.number <= 7)
-            getServer().getLogger().log(Level.SEVERE, InternalMessages.INCOMPATIBLEVERSION.getMessage());
-        if (hasHandler()) setNmsHandler();
+            langFile = new LangFile(this, langList);
+            commandMapper = new CommandMapper(this);
+            nmsVersion = new NMSVersion();
+            if (nmsVersion.number <= 7)
+                getServer().getLogger().log(Level.SEVERE, InternalMessages.INCOMPATIBLEVERSION.getMessage());
+            if (hasHandler()) setNmsHandler();
 
-        return getCommandMapper();
-
+            return getCommandMapper();
+        } catch (Exception ignored) {return null;}
     }
 
     public final void addLanguage(String language) {
@@ -94,6 +97,14 @@ public abstract class BkPlugin extends JavaPlugin {
 
     public final NMS getHandler() {
         return nmsApi;
+    }
+
+    public final boolean getEnabled() {
+        return enabled;
+    }
+
+    public final void disable() {
+        enabled = false;
     }
 
     public final void sendTitle(Player player, Integer fadeIn, Integer stay, Integer fadeOut, String title, String subtitle) {
@@ -143,10 +154,9 @@ public abstract class BkPlugin extends JavaPlugin {
             case 16:
                 apiVersion = "me.bkrmt.nms.v1_14_R1.NMSHandler";
                 break;
-
         }
         try {
-            nmsApi = (NMS) Class.forName(apiVersion).getConstructor().newInstance();
+            if (enabled) nmsApi = (NMS) Class.forName(apiVersion).getConstructor().newInstance();
         } catch (InvocationTargetException | InstantiationException | NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
             e.printStackTrace();
             getServer().getLogger().log(Level.SEVERE, "The plugin could not be started...");
