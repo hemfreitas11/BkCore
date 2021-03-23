@@ -47,7 +47,7 @@ public abstract class BkPlugin extends JavaPlugin {
             commandMapper = new CommandMapper(this);
             nmsVersion = new NMSVersion();
             if (nmsVersion.number <= 7)
-                getServer().getLogger().log(Level.SEVERE, InternalMessages.INCOMPATIBLEVERSION.getMessage());
+                getServer().getLogger().log(Level.SEVERE, InternalMessages.INCOMPATIBLE_VERSION.getMessage());
             if (hasHandler()) setNmsHandler();
 
             return getCommandMapper();
@@ -101,6 +101,17 @@ public abstract class BkPlugin extends JavaPlugin {
 
     public final boolean getEnabled() {
         return enabled;
+    }
+
+    public final void sendConsoleMessage(String message) {
+        getServer().getConsoleSender().sendMessage(message);
+    }
+
+    public final void sendStartMessage(String prefix) {
+        String message = getLangFile().getLanguage().equalsIgnoreCase("pt_BR") ?
+                Utils.translateColor(InternalMessages.PLUGIN_START_BR.getMessage().replace("{0}", prefix)):
+                Utils.translateColor(InternalMessages.PLUGIN_START_EN.getMessage().replace("{0}", prefix));
+        getServer().getConsoleSender().sendMessage(message);
     }
 
     public final void disable() {
