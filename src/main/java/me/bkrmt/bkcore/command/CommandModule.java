@@ -7,13 +7,17 @@ public class CommandModule {
     private final PluginCommand command;
 
     public CommandModule(Executor executor, TabCompleter tabCompleter) {
-        command = executor.getPlugin().getCommandMapper().createPluginCommand(executor.getName());
-        if (executor.getPlugin().getNmsVer().number > 8) command.setName(executor.getName());
-        command.setLabel(executor.getName());
-        command.setDescription(executor.getDescription());
-        command.setUsage(executor.getUsage());
-        command.setExecutor(executor);
-        if (tabCompleter != null) command.setTabCompleter(tabCompleter);
+        if (executor.getPlugin().isRunning()) {
+            command = executor.getPlugin().getCommandMapper().createPluginCommand(executor.getName());
+            if (executor.getPlugin().getNmsVer().number > 8) command.setName(executor.getName());
+            command.setLabel(executor.getName());
+            command.setDescription(executor.getDescription());
+            command.setUsage(executor.getUsage());
+            command.setExecutor(executor);
+            if (tabCompleter != null) command.setTabCompleter(tabCompleter);
+        } else {
+            command = null;
+        }
     }
 
     public PluginCommand getCommand() {

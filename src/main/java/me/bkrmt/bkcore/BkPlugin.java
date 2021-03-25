@@ -27,7 +27,7 @@ public abstract class BkPlugin extends JavaPlugin {
     private NMS nmsApi;
     private boolean hasHandler = false;
     private ArrayList<String> langList;
-    private boolean enabled;
+    private boolean running;
 
     public final CommandMapper start() {
         return start(false);
@@ -41,7 +41,7 @@ public abstract class BkPlugin extends JavaPlugin {
 
             langList.add("en_US");
             langList.add("pt_BR");
-            enabled = true;
+            running = false;
 
             langFile = new LangFile(this, langList);
             commandMapper = new CommandMapper(this);
@@ -99,8 +99,8 @@ public abstract class BkPlugin extends JavaPlugin {
         return nmsApi;
     }
 
-    public final boolean getEnabled() {
-        return enabled;
+    public final boolean isRunning() {
+        return running;
     }
 
     public final void sendConsoleMessage(String message) {
@@ -114,8 +114,8 @@ public abstract class BkPlugin extends JavaPlugin {
         getServer().getConsoleSender().sendMessage(message);
     }
 
-    public final void disable() {
-        enabled = false;
+    public final void setRunning(boolean running) {
+        this.running = running;
     }
 
     public final void sendTitle(Player player, Integer fadeIn, Integer stay, Integer fadeOut, String title, String subtitle) {
@@ -167,7 +167,7 @@ public abstract class BkPlugin extends JavaPlugin {
                 break;
         }
         try {
-            if (enabled) nmsApi = (NMS) Class.forName(apiVersion).getConstructor().newInstance();
+            if (running) nmsApi = (NMS) Class.forName(apiVersion).getConstructor().newInstance();
         } catch (InvocationTargetException | InstantiationException | NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
             e.printStackTrace();
             getServer().getLogger().log(Level.SEVERE, "The plugin could not be started...");
