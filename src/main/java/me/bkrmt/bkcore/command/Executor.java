@@ -1,6 +1,8 @@
 package me.bkrmt.bkcore.command;
 
 import me.bkrmt.bkcore.BkPlugin;
+import me.bkrmt.bkcore.Utils;
+import me.bkrmt.bkcore.message.InternalMessages;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -30,6 +32,16 @@ public abstract class Executor implements CommandExecutor {
 
     public BkPlugin getPlugin() {
         return plugin;
+    }
+
+    public boolean blockConsole(CommandSender sender, String prefix) {
+        if (!(sender instanceof Player)) {
+            String message = InternalMessages.NO_CONSOLE_SENDER.getMessage(plugin).replace("{0}", Utils.translateColor(prefix));
+            plugin.sendConsoleMessage(message);
+            return true;
+        } else {
+            return  false;
+        }
     }
 
     public String getName() {

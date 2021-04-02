@@ -31,6 +31,7 @@ public class CommandMapper {
     public final void register(String commandName) {
         CommandMap commandMap = getCommandMapInstance();
         commandMap.register(plugin.getDescription().getName(), commands.get(commandName));
+        if (plugin.hasHandler()) plugin.buildHandler();
     }
 
     public final void registerAll() {
@@ -41,6 +42,7 @@ public class CommandMapper {
                 commandMap.register(plugin.getDescription().getName(), commands.get(key));
             }
         }
+        if (plugin.hasHandler()) plugin.buildHandler();
     }
 
     public final CommandMap getCommandMapInstance() {

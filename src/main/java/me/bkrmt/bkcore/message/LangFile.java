@@ -30,7 +30,7 @@ public class LangFile {
         InputStream stream = plugin.getResource(langFile);
 
         if (stream == null && !plugin.getFile("lang", langFile).exists()) {
-            plugin.getServer().getLogger().log(Level.WARNING, InternalMessages.NOLANG.getMessage().replace("{0}", langFile));
+            plugin.getServer().getLogger().log(Level.WARNING, InternalMessages.NO_LANG.getMessage().replace("{0}", langFile));
             language = "en_US";
             langFile = language + ".yml";
         } else {

@@ -33,7 +33,7 @@ public class Utils {
         File configPath = new File(plugin.getDataFolder(), "config.yml");
         if (!configPath.exists()) {
             plugin.getConfig();
-            plugin.getLogger().log(Level.INFO, InternalMessages.NOCONFIG.getMessage());
+            plugin.getLogger().log(Level.INFO, InternalMessages.NO_CONFIG.getMessage());
             return true;
         } else {
             return false;
@@ -211,6 +211,10 @@ public class Utils {
         char firstLetter = message.charAt(0);
         result = result.replaceFirst(String.valueOf(Character.toLowerCase(firstLetter)), String.valueOf(Character.toUpperCase(firstLetter)));
         return result;
+    }
+
+    public static int getRandomInRange(int min, int max) {
+        return (int) ((Math.random() * (max - min)) + min);
     }
 
     public static String randomColor() {
