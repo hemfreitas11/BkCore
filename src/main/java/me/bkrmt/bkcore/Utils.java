@@ -303,7 +303,11 @@ public class Utils {
     public static ItemStack createItem(ItemStack item, boolean hideAttributes, String displayName, List<String> newLore) {
         ItemMeta tempMeta = item.getItemMeta();
         if (hideAttributes) tempMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        tempMeta.setLore(newLore);
+        List<String> tempLore = new ArrayList<>();
+        for (String line : newLore) {
+            tempLore.add(Utils.translateColor(line));
+        }
+        tempMeta.setLore(tempLore);
         tempMeta.setDisplayName(displayName);
         item.setItemMeta(tempMeta);
 
