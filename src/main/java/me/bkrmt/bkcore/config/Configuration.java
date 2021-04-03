@@ -231,6 +231,17 @@ public class Configuration extends YamlConfiguration {
         }
     }
 
+    public List<String> getLore(String path) {
+        List<String> translatedLore = new ArrayList<>();
+        List<String> oldLore = getStringList(path);
+        if (oldLore != null) {
+            for (String line : oldLore) {
+                translatedLore.add(Utils.translateColor(line));
+            }
+        }
+        return translatedLore;
+    }
+
     public ItemStack getItemStack(String path) {
         ItemStack item = null;
         if (plugin.getNmsVer().number < 13) {
