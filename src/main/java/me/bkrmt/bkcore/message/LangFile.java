@@ -9,12 +9,14 @@ import org.bukkit.ChatColor;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.logging.Level;
 
 public class LangFile {
     private String language;
     private final BkPlugin plugin;
     private Configuration messageFile;
+    private final Hashtable<String, String> messages;
 
     public LangFile(BkPlugin plugin, ArrayList<String> langList) {
         this.plugin = plugin;
@@ -24,6 +26,7 @@ public class LangFile {
 
         Utils.verifyConfig(plugin);
         language = plugin.getConfig().getString("language");
+        messages = new Hashtable<>();
 
         String langFile = language + ".yml";
 
@@ -43,6 +46,7 @@ public class LangFile {
             createLang(lang);
         }
 
+        loadMessages();
     }
 
     public final void loadMessageFile() {
@@ -66,11 +70,13 @@ public class LangFile {
     }
 
     public String get(String key, boolean translate) {
-        if (translate) return ChatColor.translateAlternateColorCodes('&', getConfig().getString(key));
-        else return getConfig().getString(key);
+        String message = messages.get(key);
+        return translate ? ChatColor.translateAlternateColorCodes('&', message) : message;
     }
 
-    public String prefix(String msg) {
-        return ChatColor.translateAlternateColorCodes('&', get("prefix")) + msg;
+    private void loadMessages() {
+        for (String key : messageFile.getKeys(true)) {
+            messages.put(key, messageFile.getString(key));
+        }
     }
 }
