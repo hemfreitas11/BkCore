@@ -21,11 +21,8 @@ import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 import java.io.*;
 import java.lang.reflect.Array;
 import java.text.Normalizer;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import java.util.logging.Level;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Utils {
 
@@ -33,7 +30,7 @@ public class Utils {
         File configPath = new File(plugin.getDataFolder(), "config.yml");
         if (!configPath.exists()) {
             plugin.getConfig();
-            plugin.getLogger().log(Level.INFO, InternalMessages.NO_CONFIG.getMessage());
+            plugin.sendConsoleMessage(Utils.translateColor(InternalMessages.NO_CONFIG.getMessage().replace("{0}", "&7[&4" + plugin.getName() + "&7]&c")));
             return true;
         } else {
             return false;
@@ -51,6 +48,14 @@ public class Utils {
 
         return c;
     }
+
+    public static <T, E> Set<T> getKeysByValue(Map<T, E> map, E value) {
+    return map.entrySet()
+              .stream()
+              .filter(entry -> Objects.equals(entry.getValue(), value))
+              .map(Map.Entry::getKey)
+              .collect(Collectors.toSet());
+}
 
     public static String itemStackArrayToBase64(ItemStack[] items) throws IllegalStateException {
         try {
@@ -78,7 +83,7 @@ public class Utils {
         String content = toBase64(playerInventory);
         String armor = itemStackArrayToBase64(playerInventory.getArmorContents());
 
-        return new String[] { content, armor };
+        return new String[]{content, armor};
     }
 
     public static Inventory fromBase64(String data) throws IOException {
@@ -323,9 +328,10 @@ public class Utils {
 
         return item;
     }
+
     public static String cleanString(String string) {
-    return Normalizer.normalize(string, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
-}
+        return Normalizer.normalize(string, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+    }
 
     public static String translateColor(String message) {
         return ChatColor.translateAlternateColorCodes('&', message);

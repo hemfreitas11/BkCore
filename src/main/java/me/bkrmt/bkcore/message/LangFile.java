@@ -70,8 +70,13 @@ public class LangFile {
     }
 
     public String get(String key, boolean translate) {
-        String message = messages.get(key);
-        return translate ? ChatColor.translateAlternateColorCodes('&', message) : message;
+        try {
+            String message = messages.get(key);
+            return translate ? ChatColor.translateAlternateColorCodes('&', message) : message;
+        } catch (Exception ignored) {
+            plugin.sendConsoleMessage(Utils.translateColor(InternalMessages.INVALID_MESSAGE.getMessage().replace("{0}", "&7[&4" + plugin.getName() + "&7]&c").replace("{1}", ChatColor.stripColor(key))));
+        }
+        return ChatColor.RED + "Error, check console!";
     }
 
     private void loadMessages() {

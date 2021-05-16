@@ -5,7 +5,10 @@ import me.bkrmt.bkcore.Utils;
 import me.bkrmt.bkcore.message.InternalMessages;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+
+import java.util.Iterator;
 
 public abstract class Executor implements CommandExecutor {
     private final String name;
@@ -40,7 +43,7 @@ public abstract class Executor implements CommandExecutor {
             plugin.sendConsoleMessage(message);
             return true;
         } else {
-            return  false;
+            return false;
         }
     }
 
@@ -57,7 +60,20 @@ public abstract class Executor implements CommandExecutor {
     }
 
     public final void sendUsage(CommandSender sender) {
-        sender.sendMessage(plugin.getLangFile().get("commands.usage-format").replace("{usage}", getUsage()));
+        ConfigurationSection section = plugin.getLangFile().getConfig().getConfigurationSection("commands." + langKey + ".subcommands");
+        if (section != null) {
+            StringBuilder subCommands = new StringBuilder();
+            Iterator<String> it = section.getKeys(false).iterator();
+            while (it.hasNext()) {
+                subCommands.append(section.getString(it.next() + ".command"));
+                if (it.hasNext()) subCommands.append(" | ");
+            }
+            sender.sendMessage(plugin.getLangFile().get("commands.usage-format")
+                    .replace("{usage}", getUsage())
+                    .replace("{subcommands}", subCommands.toString()));
+        } else {
+            sender.sendMessage(plugin.getLangFile().get("commands.usage-format").replace("{usage}", getUsage()));
+        }
     }
 
     public String getPermissionMessage() {

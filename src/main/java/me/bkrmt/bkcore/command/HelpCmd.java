@@ -17,7 +17,12 @@ public class HelpCmd extends Executor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        Configuration config = getPlugin().getLangFile().getConfig();
+        sendCommands(getPlugin(), sender);
+        return true;
+    }
+
+    public static void sendCommands(BkPlugin plugin, CommandSender sender) {
+        Configuration config = plugin.getLangFile().getConfig();
         ConfigurationSection commandsSection = config.getConfigurationSection("commands");
         sender.sendMessage(Utils.translateColor(config.getString("commands.help-format.header")));
         Set<String> keys = commandsSection.getKeys(false);
@@ -27,6 +32,5 @@ public class HelpCmd extends Executor {
                     .replace("{description}", config.getString("commands." + key + ".description"))));
         }
         sender.sendMessage(Utils.translateColor(config.getString("commands.help-format.footer")));
-        return true;
     }
 }
