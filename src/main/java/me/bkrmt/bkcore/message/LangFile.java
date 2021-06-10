@@ -5,6 +5,7 @@ import me.bkrmt.bkcore.Utils;
 import me.bkrmt.bkcore.config.ConfigType;
 import me.bkrmt.bkcore.config.Configuration;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 
 import java.io.File;
 import java.io.InputStream;
@@ -63,6 +64,10 @@ public class LangFile {
 
     public Configuration getConfig() {
         return messageFile;
+    }
+
+    public String get(OfflinePlayer player, String key) {
+        return null;
     }
 
     public String get(String key) {

@@ -90,7 +90,7 @@ public abstract class BkPlugin extends JavaPlugin {
         getServer().getPluginManager().callEvent(event);
     }
 
-    public final LangFile getLangFile() {
+    public LangFile getLangFile() {
         return langFile;
     }
 
