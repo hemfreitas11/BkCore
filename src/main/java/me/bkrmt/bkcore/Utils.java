@@ -1,6 +1,7 @@
 package me.bkrmt.bkcore;
 
 import me.bkrmt.bkcore.message.InternalMessages;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -14,6 +15,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
@@ -37,6 +39,10 @@ public class Utils {
         }
     }
 
+    public static String addHashCode(String string, int hashCode) {
+        return !string.contains("@") ? string + ("@" + Integer.toHexString(hashCode)) : string;
+    }
+
     public static <T> T[] concatenate(T[] a, T[] b) {
         int aLen = a.length;
         int bLen = b.length;
@@ -50,12 +56,57 @@ public class Utils {
     }
 
     public static <T, E> Set<T> getKeysByValue(Map<T, E> map, E value) {
-    return map.entrySet()
-              .stream()
-              .filter(entry -> Objects.equals(entry.getValue(), value))
-              .map(Map.Entry::getKey)
-              .collect(Collectors.toSet());
-}
+        return map.entrySet()
+                .stream()
+                .filter(entry -> Objects.equals(entry.getValue(), value))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
+    }
+
+    public static int intFromPermission(Player player, String permission) {
+        return (int) doubleFromPermission(player, permission);
+    }
+
+    public static String joinStringArray(String[] args) {
+        StringBuilder argBuilder = new StringBuilder();
+        for (String arg : args) {
+            if (argBuilder.toString().isEmpty()) {
+                argBuilder.append(arg);
+            } else {
+                argBuilder.append(" ").append(arg);
+            }
+        }
+        String fullArg = argBuilder.toString();
+        return fullArg;
+    }
+
+    public static String capitalize(String line) {
+        char[] chars = line.toLowerCase().toCharArray();
+        boolean found = false;
+        for (int i = 0; i < chars.length; i++) {
+            if (!found && Character.isLetter(chars[i])) {
+                chars[i] = Character.toUpperCase(chars[i]);
+                found = true;
+            } else if (Character.isWhitespace(chars[i]) || chars[i] == '.' || chars[i] == '\'') { // You can add other chars here
+                found = false;
+            }
+        }
+        return String.valueOf(chars);
+    }
+
+    public static double doubleFromPermission(Player player, String permission) {
+        String perm;
+        for (PermissionAttachmentInfo pio : player.getEffectivePermissions()) {
+            perm = pio.getPermission();
+            if (perm.startsWith(permission)) {
+                String ending = perm.substring(perm.lastIndexOf("."));
+                if (StringUtils.isNumeric(ending)) {
+                    return Double.parseDouble(ending);
+                }
+            }
+        }
+        return 1;
+    }
 
     public static String itemStackArrayToBase64(ItemStack[] items) throws IllegalStateException {
         try {

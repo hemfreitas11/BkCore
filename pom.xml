@@ -102,6 +102,12 @@
             <version>1.13-R0.1-SNAPSHOT</version>
             <type>jar</type>
             <scope>provided</scope>
-        </dependency>
+        </dependency><!--
+        <dependency>
+            <groupId>me.bkrmt.bkcore</groupId>
+            <artifactId>textanimator</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>-->
     </dependencies>
 </project>
