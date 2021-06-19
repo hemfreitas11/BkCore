@@ -13,11 +13,16 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public abstract class BkPlugin extends JavaPlugin {
@@ -130,6 +135,18 @@ public abstract class BkPlugin extends JavaPlugin {
 
     public final boolean hasHandler() {
         return hasHandler;
+    }
+
+    public ItemStack createHead(UUID owner, String name, List<String> lore) {
+        ItemStack item = getHandler().getItemManager().getHead();
+        SkullMeta headMeta = (SkullMeta) item.getItemMeta();
+        headMeta = getHandler().getMethodManager().setHeadOwner(headMeta, getServer().getOfflinePlayer(owner));
+        headMeta.setDisplayName(name);
+        if (!lore.isEmpty()) headMeta.setLore(lore);
+        headMeta.setLore(lore);
+        if (getNmsVer().number > 7) headMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        item.setItemMeta(headMeta);
+        return item;
     }
 
     public final void buildHandler() {

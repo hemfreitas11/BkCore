@@ -71,17 +71,13 @@ public class LangFile {
     }
 
     public List<String> getStringList(String key) {
-        return getStringList(key, false);
+        return getStringList(key, true);
     }
 
     public List<String> getStringList(String key, boolean translate) {
         try {
             List<String> list = lists.get(key);
-            if (translate) {
-                for (String line : list) {
-                    list.set(list.indexOf(line), Utils.translateColor(line));
-                }
-            }
+            if (translate) list.forEach(line -> list.set(list.indexOf(line), Utils.translateColor(line)));
             return list;
         } catch (Exception ignored) {
             plugin.sendConsoleMessage(Utils.translateColor(InternalMessages.INVALID_MESSAGE.getMessage().replace("{0}", "&7[&4" + plugin.getName() + "&7]&c").replace("{1}", ChatColor.stripColor(key))));

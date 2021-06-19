@@ -18,50 +18,6 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <!--                            <outputFile>D:/Servidores/svteste/BkTeste1.jar</outputFile>-->
-                            <outputFile>D:/Servidores/svteste/plugins/bkcore.jar</outputFile>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                            <relocations>
-                                <relocation>
-                                    <pattern>me.bkrmt.bkcore</pattern>
-                                    <shadedPattern>me.bkrmt.${project.artifactId}.bkcore</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>me.bkrmt.teleport</pattern>
-                                    <shadedPattern>me.bkrmt.${project.artifactId}.bkcore.teleport</shadedPattern>
-                                    <excludes>
-                                        <exclude>me.bkrmt.teleport.TeleportCore</exclude>
-                                        <exclude>me.bkrmt.teleport.CancelCause</exclude>
-                                    </excludes>
-                                </relocation>
-                                <relocation>
-                                    <pattern>me.bkrmt.nms</pattern>
-                                    <shadedPattern>me.bkrmt.${project.artifactId}.nms</shadedPattern>
-                                </relocation>
-                            </relocations>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
@@ -102,12 +58,6 @@
             <version>1.13-R0.1-SNAPSHOT</version>
             <type>jar</type>
             <scope>provided</scope>
-        </dependency><!--
-        <dependency>
-            <groupId>me.bkrmt.bkcore</groupId>
-            <artifactId>textanimator</artifactId>
-            <version>1.0</version>
-            <scope>provided</scope>
-        </dependency>-->
+        </dependency>
     </dependencies>
 </project>

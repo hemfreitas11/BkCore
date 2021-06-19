@@ -121,7 +121,7 @@ public class Configuration extends YamlConfiguration {
                 filePath.mkdirs();
             }
 
-            if (this.plugin.getResource(this.file.getName()) == null) {
+            if (plugin.getResource(file.getName()) == null) {
                 try {
                     this.file.createNewFile();
                 } catch (IOException e) {

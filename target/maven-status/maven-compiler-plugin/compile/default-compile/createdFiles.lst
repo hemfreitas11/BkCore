@@ -1,16 +1,13 @@
 me\bkrmt\bkcore\NMSVersion.class
-me\bkrmt\bkcore\input\PlayerInput$2.class
 me\bkrmt\bkcore\actionbar\ActionBar.class
 me\bkrmt\bkcore\config\Configuration.class
+me\bkrmt\bkcore\Time.class
 me\bkrmt\bkcore\Utils.class
 me\bkrmt\bkcore\command\CommandModule.class
-me\bkrmt\bkcore\input\PlayerInput.class
 me\bkrmt\bkcore\message\LangFile.class
 me\bkrmt\bkcore\ItemManager.class
 me\bkrmt\bkcore\command\HelpCmd.class
 me\bkrmt\bkcore\message\InternalMessages.class
-me\bkrmt\bkcore\input\InputRunnable.class
-me\bkrmt\bkcore\input\PlayerInput$1.class
 me\bkrmt\bkcore\BkPlugin.class
 me\bkrmt\bkcore\config\ConfigType.class
 me\bkrmt\bkcore\command\Executor.class
