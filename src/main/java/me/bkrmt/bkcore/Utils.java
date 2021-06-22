@@ -1,6 +1,5 @@
 package me.bkrmt.bkcore;
 
-import me.bkrmt.bkcore.message.InternalMessages;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -20,24 +19,16 @@ import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.text.Normalizer;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Utils {
-
-    public static boolean verifyConfig(BkPlugin plugin) {
-        File configPath = new File(plugin.getDataFolder(), "config.yml");
-        if (!configPath.exists()) {
-            plugin.getConfig();
-            plugin.sendConsoleMessage(Utils.translateColor(InternalMessages.NO_CONFIG.getMessage().replace("{0}", "&7[&4" + plugin.getName() + "&7]&c")));
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     public static String addHashCode(String string, int hashCode) {
         return !string.contains("@") ? string + ("@" + Integer.toHexString(hashCode)) : string;
@@ -78,6 +69,10 @@ public class Utils {
         }
         String fullArg = argBuilder.toString();
         return fullArg;
+    }
+
+    public static String getCleanPath(File file) {
+        return file.getPath().replace(File.separatorChar + file.getName(), "");
     }
 
     public static String capitalize(String line) {
@@ -217,18 +212,6 @@ public class Utils {
                 .replace("totalpages", "")
                 .trim();
         return name;
-    }
-
-    public static void copyFromResource(BkPlugin plugin, String fileSource, String destFile) throws IOException {
-        InputStream is = plugin.getResource(fileSource);
-        OutputStream os = new FileOutputStream(destFile);
-        byte[] buffer = new byte[4096];
-        int length;
-        while ((length = is.read(buffer)) > 0) {
-            os.write(buffer, 0, length);
-        }
-        os.close();
-        is.close();
     }
 
     public static boolean isValidColor(String string) {

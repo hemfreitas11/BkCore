@@ -2,8 +2,7 @@ package me.bkrmt.bkcore;
 
 import me.bkrmt.bkcore.actionbar.ActionBar;
 import me.bkrmt.bkcore.command.CommandMapper;
-import me.bkrmt.bkcore.config.ConfigType;
-import me.bkrmt.bkcore.config.Configuration;
+import me.bkrmt.bkcore.config.ConfigManager;
 import me.bkrmt.bkcore.message.InternalMessages;
 import me.bkrmt.bkcore.message.LangFile;
 import me.bkrmt.bkcore.title.Title;
@@ -11,6 +10,7 @@ import me.bkrmt.nms.api.NMS;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemFlag;
@@ -19,7 +19,6 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -27,6 +26,7 @@ import java.util.logging.Level;
 
 public abstract class BkPlugin extends JavaPlugin {
     private CommandMapper commandMapper;
+    private ConfigManager configManager;
     private LangFile langFile;
     private NMSVersion nmsVersion;
     private NMS nmsApi;
@@ -40,7 +40,7 @@ public abstract class BkPlugin extends JavaPlugin {
 
     public final CommandMapper start(boolean hasHandler) {
         try {
-            getConfig();
+            configManager = new ConfigManager(this);
             this.hasHandler = hasHandler;
             if (langList == null) this.langList = new ArrayList<>();
 
@@ -78,19 +78,6 @@ public abstract class BkPlugin extends JavaPlugin {
         return nmsVersion;
     }
 
-    @Override
-    public final Configuration getConfig() {
-        return getConfig("config.yml");
-    }
-
-    public final Configuration getConfig(String name) {
-        return getConfig(getDataFolder().getPath(), name);
-    }
-
-    public final Configuration getConfig(String path, String name) {
-        return new Configuration(this, path, name, ConfigType.Config);
-    }
-
     public final void callEvent(Event event) {
         getServer().getPluginManager().callEvent(event);
     }
@@ -114,6 +101,19 @@ public abstract class BkPlugin extends JavaPlugin {
     public final void sendStartMessage(String prefix) {
         String message = Utils.translateColor(InternalMessages.PLUGIN_START.getMessage(this).replace("{0}", prefix));
         getServer().getConsoleSender().sendMessage(message);
+    }
+
+    public boolean containsResource(String resource) {
+        return getResource(resource) != null;
+    }
+
+    @Override
+    public FileConfiguration getConfig() {
+        return null;
+    }
+
+    public ConfigManager getConfigManager() {
+        return configManager;
     }
 
     public final void setRunning(boolean running) {
@@ -154,12 +154,12 @@ public abstract class BkPlugin extends JavaPlugin {
 
         switch (getNmsVer().number) {
             default:
-                getServer().getLogger().log(Level.WARNING, ChatColor.RED + "-----------------------WARNING-------------------------");
-                getServer().getLogger().log(Level.WARNING, ChatColor.RED + getName() + " does not support this minecraft version.");
-                getServer().getLogger().log(Level.WARNING, ChatColor.RED + "The plugin will start with support for the version 1.14");
-                getServer().getLogger().log(Level.WARNING, ChatColor.RED + "but you will probably find problems.");
-                getServer().getLogger().log(Level.WARNING, ChatColor.RED + "Look for an update in: URL");
-                getServer().getLogger().log(Level.WARNING, ChatColor.RED + "-----------------------WARNING-------------------------");
+                sendConsoleMessage(ChatColor.RED + "-----------------------WARNING-------------------------");
+                sendConsoleMessage(ChatColor.RED + getName() + " does not support this minecraft version.");
+                sendConsoleMessage(ChatColor.RED + "The plugin will start with support for the version 1.14");
+                sendConsoleMessage(ChatColor.RED + "but you will probably find problems.");
+                sendConsoleMessage(ChatColor.RED + "Look for an update in: URL");
+                sendConsoleMessage(ChatColor.RED + "-----------------------WARNING-------------------------");
                 apiVersion = "me.bkrmt.nms.v1_14_R1.NMSHandler";
                 break;
             case 8:
@@ -182,7 +182,7 @@ public abstract class BkPlugin extends JavaPlugin {
         }
         try {
             if (running) nmsApi = (NMS) Class.forName(apiVersion).getConstructor().newInstance();
-        } catch (InvocationTargetException | InstantiationException | NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             getServer().getLogger().log(Level.SEVERE, "The plugin could not be started...");
             getServer().getPluginManager().disablePlugin(this);
