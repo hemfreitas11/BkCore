@@ -1,5 +1,5 @@
 package me.bkrmt.bkcore.config;
 
 public enum ConfigType {
-    Config, Lang
+    Config, Lang, Player_Data
 }

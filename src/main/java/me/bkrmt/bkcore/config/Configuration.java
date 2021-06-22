@@ -110,7 +110,8 @@ public class Configuration extends YamlConfiguration {
         try {
             if (!file.exists()) file.createNewFile();
             this.save(file);
-            updateFromResource();
+            if (type != ConfigType.Player_Data)
+                updateFromResource();
         } catch
         (Exception e) {
             e.printStackTrace();

@@ -17,7 +17,7 @@ import java.util.logging.Level;
 public class LangFile {
     private String language;
     private final BkPlugin plugin;
-    private Configuration langConfig;
+    private final Configuration langConfig;
     private ConcurrentHashMap<String, String> messages;
     private ConcurrentHashMap<String, List<String>> lists;
 
@@ -32,7 +32,7 @@ public class LangFile {
         lists = new ConcurrentHashMap<>();
 
         String langFile = language + ".yml";
-        if (plugin.containsResource(langFile) && !plugin.getFile("lang", langFile).exists()) {
+        if (!plugin.containsResource(langFile) && !plugin.getFile("lang", langFile).exists()) {
             plugin.getServer().getLogger().log(Level.WARNING, InternalMessages.NO_LANG.getMessage().replace("{0}", langFile));
             language = "en_US";
         }
@@ -49,7 +49,8 @@ public class LangFile {
 
     private Configuration createConfig(String language) {
         Configuration config = new Configuration(plugin, plugin.getFile("lang", language + ".yml"), ConfigType.Lang);
-        config.saveToFile();
+        if (!config.getFile().exists()) config.saveToFile();
+        else if (config.getFile().exists() && config.getFile().length() == 0) config.saveToFile();
         return config;
     }
 

@@ -20,7 +20,10 @@ public class ConfigManager {
         DATA_FOLDER = plugin.getDataFolder().getPath();
         File configFile = plugin.getFile("", "config.yml");
         Configuration config = new Configuration(plugin, configFile, ConfigType.Config);
+
         if (!config.getFile().exists()) config.saveToFile();
+        else if (config.getFile().exists() && config.getFile().length() == 0) config.saveToFile();
+
         addConfig(config);
         startModifiedChecker();
     }
@@ -80,6 +83,12 @@ public class ConfigManager {
         configs.put(config.getFile().getName() + "@" + Utils.getCleanPath(config.getFile()), config);
     }
 
+    public void removeConfig(String path, String name) {
+        if (!path.equals(DATA_FOLDER))
+            path = DATA_FOLDER + File.separatorChar + path;
+        configs.remove(name + "@" + path);
+    }
+
     public boolean containsConfig(String name) {
         return containsConfig(DATA_FOLDER, name);
     }
@@ -96,16 +105,19 @@ public class ConfigManager {
 
     public void reloadConfigs() {
         for (Configuration config : configs.values()) {
-            config.loadFromFile();
+            if (config.getType() != ConfigType.Player_Data)
+                config.loadFromFile();
         }
     }
 
     public void saveConfigs() {
-        for (Configuration config : configs.values()) {
-            if (config != null && config.getFile().exists()) {
-                config.saveToFile();
+        try {
+            for (Configuration config : configs.values()) {
+                if (config != null && config.getFile().exists()) {
+                    config.saveToFile();
+                }
             }
-        }
+        } catch (Exception ignored) {}
     }
 
     public void loadAllConfigs() {
