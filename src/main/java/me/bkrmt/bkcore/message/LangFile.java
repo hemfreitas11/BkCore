@@ -4,6 +4,7 @@ import me.bkrmt.bkcore.BkPlugin;
 import me.bkrmt.bkcore.Utils;
 import me.bkrmt.bkcore.config.ConfigType;
 import me.bkrmt.bkcore.config.Configuration;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 
@@ -78,7 +79,13 @@ public class LangFile {
     }
 
     public String get(OfflinePlayer player, String key) {
-        return null;
+        try {
+            String text = get(key);
+            return text.contains("%") && plugin.hasPlaceholderHook() ? PlaceholderAPI.setPlaceholders(player, text) : text;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "§cError when trying to get the message " + key;
+        }
     }
 
     public String get(String key) {
