@@ -18,8 +18,7 @@ public class Time {
     }
 
     public String getFormatedTime() {
-        return String.format(
-                "%s:%s:%s",
+        return String.format("%s:%s:%s",
                 getHours() < 10 ? "0" + getHours() : getHours(),
                 getMinutes() < 10 ? "0" + getMinutes() : getMinutes(),
                 getSeconds() < 10 ? "0" + getSeconds() : getSeconds()

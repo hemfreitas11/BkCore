@@ -63,24 +63,38 @@ public class LangFile {
         return langConfig;
     }
 
+    public List<String> getStringList(OfflinePlayer player, String key) {
+        List<String> list = getStringList(key);
+        boolean hasPapiHook = plugin.hasPlaceholderHook();
+        list.forEach(line -> {
+            if (line.contains("%") && hasPapiHook) list.set(list.indexOf(line), PlaceholderAPI.setPlaceholders(player, line));
+        });
+        return list;
+    }
+
     public List<String> getStringList(String key) {
         return getStringList(key, true);
     }
 
     public List<String> getStringList(String key, boolean translate) {
         try {
-            List<String> list = lists.get(key);
+            List<String> list = new ArrayList<>(lists.get(key) == null ? Collections.singletonList(messages.get(key)) : lists.get(key));
             if (translate) list.forEach(line -> list.set(list.indexOf(line), Utils.translateColor(line)));
             return list;
         } catch (Exception ignored) {
+            ignored.printStackTrace();
             plugin.sendConsoleMessage(Utils.translateColor(InternalMessages.INVALID_MESSAGE.getMessage().replace("{0}", Utils.translateColor("&7[&4" + plugin.getName() + "&7]&c")).replace("{1}", ChatColor.stripColor(key))));
         }
         return Collections.singletonList(ChatColor.RED + "Error, check console!");
     }
 
     public String get(OfflinePlayer player, String key) {
+        return get(player, key, true);
+    }
+
+    public String get(OfflinePlayer player, String key, boolean translate) {
         try {
-            String text = get(key);
+            String text = get(key, translate);
             return text.contains("%") && plugin.hasPlaceholderHook() ? PlaceholderAPI.setPlaceholders(player, text) : text;
         } catch (Exception e) {
             e.printStackTrace();
@@ -95,6 +109,7 @@ public class LangFile {
     public String get(String key, boolean translate) {
         try {
             String message = messages.get(key);
+            if (message.contains("%") && plugin.hasPlaceholderHook()) message = PlaceholderAPI.setPlaceholders(null, message);
             return translate ? ChatColor.translateAlternateColorCodes('&', message) : message;
         } catch (Exception ignored) {
             plugin.sendConsoleMessage(Utils.translateColor(InternalMessages.INVALID_MESSAGE.getMessage().replace("{0}", Utils.translateColor("&7[&4" + plugin.getName() + "&7]&c")).replace("{1}", ChatColor.stripColor(key))));

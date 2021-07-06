@@ -54,7 +54,13 @@ public class Utils {
                 .collect(Collectors.toSet());
     }
 
-    public static int intFromPermission(Player player, String permission) {
+    public static int intFromPermission(Player player, String permission, String[] bypassPermissions) {
+        if (player.isOp()) return 0;
+        if (bypassPermissions != null) {
+            for (String perm : bypassPermissions) {
+                if (player.hasPermission(perm)) return 0;
+            }
+        }
         return (int) doubleFromPermission(player, permission);
     }
 
@@ -91,6 +97,7 @@ public class Utils {
 
     public static double doubleFromPermission(Player player, String permission) {
         String perm;
+        if (player.isOp()) return 0;
         for (PermissionAttachmentInfo pio : player.getEffectivePermissions()) {
             perm = pio.getPermission();
             if (perm.startsWith(permission)) {
@@ -100,7 +107,7 @@ public class Utils {
                 }
             }
         }
-        return 1;
+        return 5;
     }
 
     public static String itemStackArrayToBase64(ItemStack[] items) throws IllegalStateException {

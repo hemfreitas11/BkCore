@@ -5,6 +5,7 @@ import me.bkrmt.bkcore.command.CommandMapper;
 import me.bkrmt.bkcore.config.ConfigManager;
 import me.bkrmt.bkcore.message.InternalMessages;
 import me.bkrmt.bkcore.message.LangFile;
+import me.bkrmt.bkcore.textanimator.AnimatorManager;
 import me.bkrmt.bkcore.title.Title;
 import me.bkrmt.nms.api.NMS;
 import net.md_5.bungee.api.ChatMessageType;
@@ -16,6 +17,7 @@ import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -116,6 +118,15 @@ public abstract class BkPlugin extends JavaPlugin {
         return configManager;
     }
 
+    public boolean hasPlaceholderHook() {
+        Plugin papi = getServer().getPluginManager().getPlugin("PlaceholderAPI");
+        return (papi != null && papi.isEnabled());
+    }
+
+    public AnimatorManager getAnimatorManager() {
+        return null;
+    }
+
     public final void setRunning(boolean running) {
         this.running = running;
     }
@@ -123,8 +134,10 @@ public abstract class BkPlugin extends JavaPlugin {
     public final void sendTitle(Player player, Integer fadeIn, Integer stay, Integer fadeOut, String title, String subtitle) {
         if (getNmsVer().number == 8) {
             getHandler().getTitleManager().sendTitle(player, fadeIn, stay, fadeOut, title, subtitle);
-        } else {
+        } else if (getNmsVer().number > 8 && getNmsVer().number < 17) {
             new Title(this).sendTitle(player, fadeIn, stay, fadeOut, title, subtitle);
+        } else {
+            player.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
         }
     }
 
@@ -177,6 +190,7 @@ public abstract class BkPlugin extends JavaPlugin {
             case 14:
             case 15:
             case 16:
+            case 17:
                 apiVersion = "me.bkrmt.nms.v1_14_R1.NMSHandler";
                 break;
         }

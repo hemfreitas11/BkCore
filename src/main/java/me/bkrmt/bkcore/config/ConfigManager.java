@@ -2,8 +2,6 @@ package me.bkrmt.bkcore.config;
 
 import me.bkrmt.bkcore.BkPlugin;
 import me.bkrmt.bkcore.Utils;
-import me.bkrmt.bkcore.message.InternalMessages;
-import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
@@ -63,7 +61,6 @@ public class ConfigManager {
             Configuration returnConfig = configs.get(name + "@" + path);
             if (returnConfig != null) return returnConfig;
         }
-
         File existingFile = plugin.getFile(temp, name);
         if (existingFile.exists()) {
             Configuration cachedConfig = new Configuration(plugin, existingFile);
@@ -71,11 +68,11 @@ public class ConfigManager {
             return cachedConfig;
         }
 
-        plugin.sendConsoleMessage(Utils.translateColor(InternalMessages.INVALID_CONFIG.getMessage(plugin)
+        /*plugin.sendConsoleMessage(Utils.translateColor(InternalMessages.INVALID_CONFIG.getMessage(plugin)
                 .replace("{0}", Utils.translateColor("&7[&4" + plugin.getName() + "&7]&c"))
                 .replace("{1}", name
                 )));
-        Bukkit.getPluginManager().disablePlugin(plugin);
+        Bukkit.getPluginManager().disablePlugin(plugin);*/
         return null;
     }
 

@@ -10,6 +10,7 @@ public enum InternalMessages {
     VALIDATOR_NO_RESPONSE("{0} The validator has failed! Please report this as soon as possible on: {1}discord.gg/2MHgyjCuPc", "{0} O validador falhou! Por favor reporte isso o mais rapido possivel em: {1}discord.gg/2MHgyjCuPc"),
     NO_ECONOMY("{0} Vault/Economy plugin not found, disabling the plugin...", "{0} Vault/Plugin de economia nao encontrado, desativando o plugin!"),
     NO_CONSOLE_SENDER("{0} You can't use this command from the console!", "{0} Voce nao pode usar esse comando pelo console!"),
+    NO_PLACEHOLDER("{0} PlaceholderAPI was not found, disabling the plugin...", "{0} PlaceholderAPI nao foi encontrado, desativando o plugin..."),
     NO_CONFIG("{0} The config file was not found, generating a new one..."),
     INVALID_CONFIG("{0} Critical error when trying to load the config file \"{1}\", disabling the plugin...",
         "{0} Erro critico ao tentar carregar o arquivo de config \"{1}\", desativando o plugin..."),
