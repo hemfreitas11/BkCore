@@ -9,7 +9,6 @@ import org.bukkit.plugin.Plugin;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,7 +32,7 @@ public class ConfigUpdater {
      * @throws IOException If an IOException occurs
      */
     public static void update(Plugin plugin, String resourceName, File toUpdate) throws IOException {
-        BufferedReader newReader = new BufferedReader(new InputStreamReader(plugin.getResource(resourceName), StandardCharsets.UTF_8));
+        BufferedReader newReader = new BufferedReader(new InputStreamReader(plugin.getResource(resourceName)));
         List<String> newLines;
         try {
              newLines = newReader.lines().collect(Collectors.toList());
@@ -45,7 +44,7 @@ public class ConfigUpdater {
         }
 
         FileConfiguration oldConfig = YamlConfiguration.loadConfiguration(toUpdate);
-        FileConfiguration newConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(plugin.getResource(resourceName), StandardCharsets.UTF_8));
+        FileConfiguration newConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(plugin.getResource(resourceName)));
 
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(toUpdate)));
         List<String> temp = new ArrayList<>();
