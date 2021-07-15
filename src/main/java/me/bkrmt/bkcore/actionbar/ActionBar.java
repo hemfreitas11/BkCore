@@ -15,7 +15,7 @@ public class ActionBar {
     public ActionBar(BkPlugin plugin, Player player) {
         this.player = player;
         nmsver = plugin.getNmsVer().full;
-        useOldMethods = plugin.getNmsVer().number < 9;
+        useOldMethods = plugin.getNmsVer().number < 8;
     }
 
     public void sendActionBar(String message) {
@@ -59,7 +59,7 @@ public class ActionBar {
             Method sendPacketMethod = playerConnection.getClass().getDeclaredMethod("sendPacket", packetClass);
             sendPacketMethod.invoke(playerConnection, packet);
         } catch (Exception e) {
-//            e.printStackTrace();
+            e.printStackTrace();
             if (!message.isEmpty()) player.sendMessage(message);
         }
     }

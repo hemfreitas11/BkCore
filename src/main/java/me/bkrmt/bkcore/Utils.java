@@ -101,7 +101,7 @@ public class Utils {
         for (PermissionAttachmentInfo pio : player.getEffectivePermissions()) {
             perm = pio.getPermission();
             if (perm.startsWith(permission)) {
-                String ending = perm.substring(perm.lastIndexOf("."));
+                String ending = perm.substring(perm.lastIndexOf(".")).replace(".", "");
                 if (StringUtils.isNumeric(ending)) {
                     return Double.parseDouble(ending);
                 }
@@ -119,8 +119,8 @@ public class Utils {
             dataOutput.writeInt(items.length);
 
             // Save every element in the list
-            for (int i = 0; i < items.length; i++) {
-                dataOutput.writeObject(items[i]);
+            for (ItemStack item : items) {
+                dataOutput.writeObject(item);
             }
 
             // Serialize that array
