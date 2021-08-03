@@ -49,7 +49,7 @@ public class LangFile {
     }
 
     private Configuration createConfig(String language) {
-        Configuration config = new Configuration(plugin, plugin.getFile("lang", language + ".yml"), ConfigType.Lang);
+        Configuration config = new Configuration(plugin, plugin.getFile("lang", language + ".yml"), ConfigType.LANG);
         if (!config.getFile().exists()) config.saveToFile();
         else if (config.getFile().exists() && config.getFile().length() == 0) config.saveToFile();
         return config;
@@ -83,7 +83,7 @@ public class LangFile {
             return list;
         } catch (Exception ignored) {
             ignored.printStackTrace();
-            plugin.sendConsoleMessage(Utils.translateColor(InternalMessages.INVALID_MESSAGE.getMessage().replace("{0}", Utils.translateColor("&7[&4" + plugin.getName() + "&7]&c")).replace("{1}", ChatColor.stripColor(key))));
+            plugin.sendConsoleMessage(Utils.translateColor(InternalMessages.INVALID_MESSAGE.getMessage().replace("{0}", Utils.translateColor("&7[&4" + plugin.getName() + "&7]&c")).replace("{1}", ChatColor.stripColor(formatKey(key)))));
         }
         return Collections.singletonList(ChatColor.RED + "Error, check console!");
     }
@@ -98,7 +98,7 @@ public class LangFile {
             return text.contains("%") && plugin.hasPlaceholderHook() ? PlaceholderAPI.setPlaceholders(player, text) : text;
         } catch (Exception e) {
             e.printStackTrace();
-            return "§cError when trying to get the message " + key;
+            return "§cError when trying to get the message " + formatKey(key);
         }
     }
 
@@ -110,9 +110,9 @@ public class LangFile {
         try {
             String message = messages.get(key);
             if (message.contains("%") && plugin.hasPlaceholderHook()) message = PlaceholderAPI.setPlaceholders(null, message);
-            return translate ? ChatColor.translateAlternateColorCodes('&', message) : message;
+            return translate ? Utils.translateColor(message) : message;
         } catch (Exception ignored) {
-            plugin.sendConsoleMessage(Utils.translateColor(InternalMessages.INVALID_MESSAGE.getMessage().replace("{0}", Utils.translateColor("&7[&4" + plugin.getName() + "&7]&c")).replace("{1}", ChatColor.stripColor(key))));
+            plugin.sendConsoleMessage(Utils.translateColor(InternalMessages.INVALID_MESSAGE.getMessage().replace("{0}", Utils.translateColor("&7[&4" + plugin.getName() + "&7]&c")).replace("{1}", ChatColor.stripColor(formatKey(key)))));
         }
         return ChatColor.RED + "Error, check console!";
     }
@@ -122,6 +122,10 @@ public class LangFile {
         messages = new ConcurrentHashMap<>();
         lists = new ConcurrentHashMap<>();
         loadMessages();
+    }
+
+    private String formatKey(String key) {
+        return key.replaceAll("\\.", " -> ");
     }
 
     private void loadMessages() {

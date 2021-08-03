@@ -1,5 +1,6 @@
 package me.bkrmt.bkcore;
 
+import me.bkrmt.nms.v1_16_R1.ColorUtil;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -29,6 +30,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Utils {
+    private static NMSVersion nmsVersion = new NMSVersion();
 
     public static String addHashCode(String string, int hashCode) {
         return !string.contains("@") ? string + ("@" + Integer.toHexString(hashCode)) : string;
@@ -54,14 +56,13 @@ public class Utils {
                 .collect(Collectors.toSet());
     }
 
-    public static int intFromPermission(Player player, String permission, String[] bypassPermissions) {
-        if (player.isOp()) return 0;
+    public static int intFromPermission(Player player, int defaultValue, String permission, String[] bypassPermissions) {
         if (bypassPermissions != null) {
             for (String perm : bypassPermissions) {
-                if (player.hasPermission(perm)) return 0;
+                if (player.hasPermission(perm)) return -1;
             }
         }
-        return (int) doubleFromPermission(player, permission);
+        return (int) doubleFromPermission(player, defaultValue, permission);
     }
 
     public static String joinStringArray(String[] args) {
@@ -95,9 +96,8 @@ public class Utils {
         return String.valueOf(chars);
     }
 
-    public static double doubleFromPermission(Player player, String permission) {
+    public static double doubleFromPermission(Player player, int defaultValue, String permission) {
         String perm;
-        if (player.isOp()) return 0;
         for (PermissionAttachmentInfo pio : player.getEffectivePermissions()) {
             perm = pio.getPermission();
             if (perm.startsWith(permission)) {
@@ -107,7 +107,7 @@ public class Utils {
                 }
             }
         }
-        return 5;
+        return defaultValue;
     }
 
     public static String itemStackArrayToBase64(ItemStack[] items) throws IllegalStateException {
@@ -374,6 +374,7 @@ public class Utils {
     }
 
     public static String translateColor(String message) {
+        if (nmsVersion.number >= 16 && message.contains("#")) message = ColorUtil.translateHex(message);
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 

@@ -17,7 +17,7 @@ public class ConfigManager {
         this.configs = new ConcurrentHashMap<>();
         DATA_FOLDER = plugin.getDataFolder().getPath();
         File configFile = plugin.getFile("", "config.yml");
-        Configuration config = new Configuration(plugin, configFile, ConfigType.Config);
+        Configuration config = new Configuration(plugin, configFile, ConfigType.CONFIG);
 
         if (!config.getFile().exists()) config.saveToFile();
         else if (config.getFile().exists() && config.getFile().length() == 0) config.saveToFile();
@@ -38,11 +38,13 @@ public class ConfigManager {
                                 config.setTimeStamp(currentTimeStamp);
                                 config.loadFromFile();
                             }
+                        } else {
+                            configs.remove(config);
                         }
                     }
                 }
             }
-        }.runTaskTimerAsynchronously(plugin, 0, 10);
+        }.runTaskTimerAsynchronously(plugin, 0, 20);
     }
 
     public Configuration getConfig() {
@@ -86,6 +88,10 @@ public class ConfigManager {
         configs.remove(name + "@" + path);
     }
 
+    public ConcurrentHashMap<String, Configuration> getConfigs() {
+        return configs;
+    }
+
     public boolean containsConfig(String name) {
         return containsConfig(DATA_FOLDER, name);
     }
@@ -102,7 +108,7 @@ public class ConfigManager {
 
     public void reloadConfigs() {
         for (Configuration config : configs.values()) {
-            if (config.getType() != ConfigType.Player_Data)
+            if (config.getType() != ConfigType.PLAYER_DATA)
                 config.loadFromFile();
         }
     }
@@ -110,11 +116,13 @@ public class ConfigManager {
     public void saveConfigs() {
         try {
             for (Configuration config : configs.values()) {
-                if (config != null && config.getFile().exists()) {
+                if (config != null && config.getFile().exists() && config.getType() != ConfigType.PLAYER_DATA) {
                     config.saveToFile();
                 }
             }
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void loadAllConfigs() {
@@ -122,7 +130,7 @@ public class ConfigManager {
         if (pluginFiles.length > 0) {
             for (File file : pluginFiles) {
                 if (file.getName().endsWith(".yml") && !file.getName().equalsIgnoreCase("config.yml") && !file.getPath().contains("lang")) {
-                    addConfig(new Configuration(plugin, file, ConfigType.Config));
+                    addConfig(new Configuration(plugin, file, ConfigType.CONFIG));
                 }
             }
         }

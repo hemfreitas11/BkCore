@@ -41,7 +41,7 @@ public class Configuration extends YamlConfiguration {
         loadFromFile();
 
         if (plugin.containsResource(file.getName()) ||
-                (type.equals(ConfigType.Lang) && !file.getName().equalsIgnoreCase("pt_BR.yml")
+                (type.equals(ConfigType.LANG) && !file.getName().equalsIgnoreCase("pt_BR.yml")
                         && !file.getName().equalsIgnoreCase("en_US.yml"))) {
             validateOptions();
         }
@@ -49,7 +49,7 @@ public class Configuration extends YamlConfiguration {
 
     public Configuration(BkPlugin plugin, File newFile) {
         this.plugin = plugin;
-        this.type = ConfigType.Config;
+        this.type = ConfigType.CONFIG;
         file = newFile;
 
         createData();
@@ -63,9 +63,9 @@ public class Configuration extends YamlConfiguration {
     private void validateOptions() {
         Set<String> configKeys = getKeys(true);
         FileConfiguration resourceConfig = null;
-        if (type.equals(ConfigType.Config)) {
+        if (type.equals(ConfigType.CONFIG)) {
             resourceConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(plugin.getResource(file.getName())));
-        } else if (type.equals(ConfigType.Lang)) {
+        } else if (type.equals(ConfigType.LANG)) {
             String fileName = "en_US.yml";
             if (file.getName().equalsIgnoreCase("pt_BR.yml") || file.getName().equalsIgnoreCase("en_US.yml")) {
                 fileName = file.getName();
@@ -110,7 +110,7 @@ public class Configuration extends YamlConfiguration {
         try {
             if (!file.exists()) file.createNewFile();
             this.save(file);
-            if (type != ConfigType.Player_Data)
+            if (type != ConfigType.PLAYER_DATA)
                 updateFromResource();
         } catch
         (Exception e) {

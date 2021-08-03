@@ -189,11 +189,11 @@ public abstract class BkPlugin extends JavaPlugin {
             default:
                 sendConsoleMessage(ChatColor.RED + "-----------------------WARNING-------------------------");
                 sendConsoleMessage(ChatColor.RED + getName() + " does not support this minecraft version.");
-                sendConsoleMessage(ChatColor.RED + "The plugin will start with support for the version 1.14");
+                sendConsoleMessage(ChatColor.RED + "The plugin will start with support for the version 1.16");
                 sendConsoleMessage(ChatColor.RED + "but you will probably find problems.");
                 sendConsoleMessage(ChatColor.RED + "Look for an update in: URL");
                 sendConsoleMessage(ChatColor.RED + "-----------------------WARNING-------------------------");
-                apiVersion = "me.bkrmt.nms.v1_14_R1.NMSHandler";
+                apiVersion = "me.bkrmt.nms.v1_16_R1.NMSHandler";
                 break;
             case 8:
                 apiVersion = "me.bkrmt.nms." + getNmsVer().full + ".NMSHandler";
@@ -211,7 +211,7 @@ public abstract class BkPlugin extends JavaPlugin {
             case 15:
             case 16:
             case 17:
-                apiVersion = "me.bkrmt.nms.v1_14_R1.NMSHandler";
+                apiVersion = "me.bkrmt.nms.v1_16_R1.NMSHandler";
                 break;
         }
         try {
