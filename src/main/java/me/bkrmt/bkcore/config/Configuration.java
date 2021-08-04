@@ -79,6 +79,7 @@ public class Configuration extends YamlConfiguration {
                     set(resKey, resourceConfig.get(resKey));
                 }
             }
+            saveToFile();
         }
     }
 

@@ -2,6 +2,7 @@ package me.bkrmt.bkcore.config;
 
 import me.bkrmt.bkcore.BkPlugin;
 import me.bkrmt.bkcore.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
@@ -31,7 +32,8 @@ public class ConfigManager {
             @Override
             public void run() {
                 if (configs.size() > 0) {
-                    for (Configuration config : configs.values()) {
+                    for (String key : configs.keySet()) {
+                        Configuration config = configs.get(key);
                         if (config.getFile().exists()) {
                             long currentTimeStamp = config.getFile().lastModified();
                             if (currentTimeStamp != config.getTimeStamp()) {
@@ -39,7 +41,7 @@ public class ConfigManager {
                                 config.loadFromFile();
                             }
                         } else {
-                            configs.remove(config);
+                            configs.remove(key);
                         }
                     }
                 }
@@ -125,14 +127,16 @@ public class ConfigManager {
         }
     }
 
-    public void loadAllConfigs() {
-        File[] pluginFiles = plugin.getDataFolder().listFiles();
-        if (pluginFiles.length > 0) {
-            for (File file : pluginFiles) {
-                if (file.getName().endsWith(".yml") && !file.getName().equalsIgnoreCase("config.yml") && !file.getPath().contains("lang")) {
-                    addConfig(new Configuration(plugin, file, ConfigType.CONFIG));
+    public void loadAllConfigs(BkPlugin plugin) {
+        Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
+            File[] pluginFiles = plugin.getDataFolder().listFiles();
+            if (pluginFiles != null && pluginFiles.length > 0) {
+                for (File file : pluginFiles) {
+                    if (file.getName().endsWith(".yml") && !file.getName().equalsIgnoreCase("config.yml") && !file.getPath().contains("lang")) {
+                        addConfig(new Configuration(plugin, file, ConfigType.CONFIG));
+                    }
                 }
             }
-        }
+        }, 0);
     }
 }

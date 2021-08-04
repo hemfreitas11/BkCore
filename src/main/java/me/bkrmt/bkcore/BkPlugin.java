@@ -1,10 +1,9 @@
 package me.bkrmt.bkcore;
 
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import me.bkrmt.bkcore.actionbar.ActionBar;
 import me.bkrmt.bkcore.command.CommandMapper;
 import me.bkrmt.bkcore.config.ConfigManager;
+import me.bkrmt.bkcore.heads.HeadManager;
 import me.bkrmt.bkcore.message.InternalMessages;
 import me.bkrmt.bkcore.message.LangFile;
 import me.bkrmt.bkcore.textanimator.AnimatorManager;
@@ -16,22 +15,17 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import java.util.logging.Level;
 
 public abstract class BkPlugin extends JavaPlugin {
     private CommandMapper commandMapper;
     private ConfigManager configManager;
+    private HeadManager headManager;
     private LangFile langFile;
     private NMSVersion nmsVersion;
     private NMS nmsApi;
@@ -46,6 +40,7 @@ public abstract class BkPlugin extends JavaPlugin {
     public final CommandMapper start(boolean hasHandler) {
         try {
             configManager = new ConfigManager(this);
+            headManager = new HeadManager(this);
             this.hasHandler = hasHandler;
             if (langList == null) this.langList = new ArrayList<>();
 
@@ -77,6 +72,10 @@ public abstract class BkPlugin extends JavaPlugin {
             filePath = getDataFolder().getPath() + File.separatorChar + filePath;
         File configPath = new File(filePath);
         return new File(configPath, fileName);
+    }
+
+    public HeadManager getHeadManager() {
+        return headManager;
     }
 
     public final NMSVersion getNmsVer() {
@@ -153,35 +152,6 @@ public abstract class BkPlugin extends JavaPlugin {
         return hasHandler;
     }
 
-    public ItemStack createHead(UUID owner, String name, List<String> lore) {
-        ItemStack item = getHandler().getItemManager().getHead();
-        SkullMeta headMeta = (SkullMeta) item.getItemMeta();
-        headMeta = getHandler().getMethodManager().setHeadOwner(headMeta, getServer().getOfflinePlayer(owner));
-        headMeta.setDisplayName(name);
-        if (!lore.isEmpty()) headMeta.setLore(lore);
-        headMeta.setLore(lore);
-        if (getNmsVer().number > 7) headMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        item.setItemMeta(headMeta);
-        return item;
-    }
-
-    public ItemStack getCustomTextureHead(String value) {
-        ItemStack head = getHandler().getItemManager().getHead();
-        SkullMeta meta = (SkullMeta) head.getItemMeta();
-        GameProfile profile = new GameProfile(UUID.randomUUID(), "");
-        profile.getProperties().put("textures", new Property("textures", value));
-        Field profileField;
-        try {
-            profileField = meta.getClass().getDeclaredField("profile");
-            profileField.setAccessible(true);
-            profileField.set(meta, profile);
-        } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
-            e.printStackTrace();
-        }
-        head.setItemMeta(meta);
-        return head;
-    }
-
     public final void buildHandler() {
         String apiVersion;
 
@@ -209,6 +179,8 @@ public abstract class BkPlugin extends JavaPlugin {
                 break;
             case 14:
             case 15:
+                apiVersion = "me.bkrmt.nms.v1_14_R1.NMSHandler";
+                break;
             case 16:
             case 17:
                 apiVersion = "me.bkrmt.nms.v1_16_R1.NMSHandler";

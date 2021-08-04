@@ -1,8 +1,11 @@
 me\bkrmt\bkcore\config\ConfigUpdater.class
 me\bkrmt\bkcore\config\ConfigManager$1.class
 me\bkrmt\bkcore\NMSVersion.class
+me\bkrmt\bkcore\heads\HeadManager.class
+me\bkrmt\bkcore\heads\HeadRunnable.class
 me\bkrmt\bkcore\actionbar\ActionBar.class
 me\bkrmt\bkcore\config\Configuration.class
+me\bkrmt\bkcore\heads\Head.class
 me\bkrmt\bkcore\Time.class
 me\bkrmt\bkcore\Utils.class
 me\bkrmt\bkcore\command\CommandModule.class

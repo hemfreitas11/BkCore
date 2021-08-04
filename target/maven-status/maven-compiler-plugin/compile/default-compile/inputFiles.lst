@@ -1,4 +1,5 @@
 C:\Users\Herick\IdeaProjects\BkPlugins\BkCore\src\main\java\me\bkrmt\bkcore\config\ConfigManager.java
+C:\Users\Herick\IdeaProjects\BkPlugins\BkCore\src\main\java\me\bkrmt\bkcore\heads\HeadManager.java
 C:\Users\Herick\IdeaProjects\BkPlugins\BkCore\src\main\java\me\bkrmt\bkcore\config\ConfigUpdater.java
 C:\Users\Herick\IdeaProjects\BkPlugins\BkCore\src\main\java\me\bkrmt\bkcore\ItemManager.java
 C:\Users\Herick\IdeaProjects\BkPlugins\BkCore\src\main\java\me\bkrmt\bkcore\command\CommandModule.java
@@ -6,7 +7,9 @@ C:\Users\Herick\IdeaProjects\BkPlugins\BkCore\src\main\java\me\bkrmt\bkcore\comm
 C:\Users\Herick\IdeaProjects\BkPlugins\BkCore\src\main\java\me\bkrmt\bkcore\message\InternalMessages.java
 C:\Users\Herick\IdeaProjects\BkPlugins\BkCore\src\main\java\me\bkrmt\bkcore\Utils.java
 C:\Users\Herick\IdeaProjects\BkPlugins\BkCore\src\main\java\me\bkrmt\bkcore\command\CommandMapper.java
+C:\Users\Herick\IdeaProjects\BkPlugins\BkCore\src\main\java\me\bkrmt\bkcore\heads\Head.java
 C:\Users\Herick\IdeaProjects\BkPlugins\BkCore\src\main\java\me\bkrmt\bkcore\message\LangFile.java
+C:\Users\Herick\IdeaProjects\BkPlugins\BkCore\src\main\java\me\bkrmt\bkcore\heads\HeadRunnable.java
 C:\Users\Herick\IdeaProjects\BkPlugins\BkCore\src\main\java\me\bkrmt\bkcore\config\Configuration.java
 C:\Users\Herick\IdeaProjects\BkPlugins\BkCore\src\main\java\me\bkrmt\bkcore\Time.java
 C:\Users\Herick\IdeaProjects\BkPlugins\BkCore\src\main\java\me\bkrmt\bkcore\title\Title.java
