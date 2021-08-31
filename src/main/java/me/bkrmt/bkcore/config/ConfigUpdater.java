@@ -178,7 +178,7 @@ public class ConfigUpdater {
 
     //Key is the config key, value = comment and/or ignored sections
     //Parses comments, blank lines, and ignored sections
-    private static Map<String, String> parseComments(List<String> lines, List<String> ignoredSections, FileConfiguration oldConfig, Yaml yaml) {
+    public static Map<String, String> parseComments(List<String> lines, List<String> ignoredSections, FileConfiguration oldConfig, Yaml yaml) {
         Map<String, String> comments = new HashMap<>();
         StringBuilder builder = new StringBuilder();
         StringBuilder keyBuilder = new StringBuilder();

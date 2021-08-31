@@ -127,7 +127,20 @@ public class ConfigManager {
         }
     }
 
-    public void loadAllConfigs(BkPlugin plugin) {
+    public void loadAllFromFolder(File folder, ConfigType assignedType) {
+        if (folder != null && folder.exists()) {
+            File[] files = folder.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.getName().endsWith(".yml")) {
+                        addConfig(new Configuration(plugin, file, assignedType));
+                    }
+                }
+            }
+        }
+    }
+
+    public void loadAllConfigs() {
         Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
             File[] pluginFiles = plugin.getDataFolder().listFiles();
             if (pluginFiles != null && pluginFiles.length > 0) {

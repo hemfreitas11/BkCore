@@ -2,6 +2,7 @@ package me.bkrmt.bkcore;
 
 import me.bkrmt.nms.v1_16_R1.ColorUtil;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -25,6 +26,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.nio.charset.StandardCharsets;
 import java.text.Normalizer;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -32,7 +34,7 @@ import java.util.stream.Collectors;
 public class Utils {
     private static NMSVersion nmsVersion = new NMSVersion();
 
-    public static String addHashCode(String string, int hashCode) {
+    private static String addHashCode(String string, int hashCode) {
         return !string.contains("@") ? string + ("@" + Integer.toHexString(hashCode)) : string;
     }
 
@@ -74,8 +76,7 @@ public class Utils {
                 argBuilder.append(" ").append(arg);
             }
         }
-        String fullArg = argBuilder.toString();
-        return fullArg;
+        return argBuilder.toString();
     }
 
     public static String getCleanPath(File file) {
@@ -260,6 +261,40 @@ public class Utils {
 
     public static int getRandomInRange(int min, int max) {
         return (int) ((Math.random() * (max - min)) + min);
+    }
+
+    public static boolean isBlank(List<String> list) {
+        if (list == null) return true;
+        if (list.size() == 0) return false;
+        String lastMember = list.get(list.size()-1);
+        return lastMember.isEmpty() ||
+          StringUtils.isBlank(lastMember) ||
+           StringUtils.isWhitespace(lastMember);
+    }
+
+    public static boolean canEncode(String string) {
+        return StandardCharsets.ISO_8859_1.newEncoder().canEncode(string);
+    }
+
+
+    public static List<String> wrapLore(List<String> lore, int wrapLength) {
+        List<String> returnList = new ArrayList<>();
+
+        for (String line : lore) {
+            if (line.length() > wrapLength) {
+                Collections.addAll(returnList, WordUtils.wrap(line, wrapLength).replace("\r", "").split("\n"));
+            } else {
+                returnList.add(line);
+            }
+        }
+
+        return returnList;
+    }
+
+    public static List<String> wrappedToList(String wrappedString, int wrapLength) {
+        List<String> returnList = new ArrayList<>();
+        Collections.addAll(returnList, WordUtils.wrap(wrappedString, wrapLength).replace("\r", "").split("\n"));
+        return returnList;
     }
 
     public static String randomColor() {

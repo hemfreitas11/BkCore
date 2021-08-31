@@ -17,9 +17,6 @@ public enum InternalMessages {
     NO_LANG("The language \"{0}\" was not found in the \"lang\" folder, using the english file instead (en_US.yml)"),
     INVALID_MESSAGE("{0} The message \"{1}\" was not found or is corrupted."),
     UNKNOWN_ERROR("{0} An unexpected error occurred, disabling the plugin..."),
-    ESS_COPY_HOME("[{0}] New homes in Essentials detected, importing..."),
-    ESS_COPY_WARPS("[{0}] New warps in Essentials detected, importing..."),
-    ESS_COPY_DONE("[{0}] Finished importing."),
     MATERIAL_NOT_FOUND("The material {0} was not found... Using dirt instead."),
     INCOMPATIBLE_VERSION("Server versions bellow 1.8 are not supported and will NOT work, you have been warned");
 
