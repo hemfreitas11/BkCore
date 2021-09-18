@@ -6,6 +6,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import me.bkrmt.bkcore.BkPlugin;
 import me.bkrmt.bkcore.config.Configuration;
+import me.bkrmt.bkcore.xlibs.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
@@ -101,7 +102,7 @@ public class HeadManager {
     }
 
     public ItemStack getCustomTextureHead(String value) {
-        ItemStack head = plugin.getHandler().getItemManager().getHead();
+        ItemStack head = XMaterial.PLAYER_HEAD.parseItem();
         SkullMeta meta = (SkullMeta) head.getItemMeta();
         applyGameProfile(value, meta);
         head.setItemMeta(meta);

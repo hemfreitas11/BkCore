@@ -1,13 +1,10 @@
 package me.bkrmt.bkcore.config;
 
 import me.bkrmt.bkcore.BkPlugin;
-import me.bkrmt.bkcore.ItemManager;
 import me.bkrmt.bkcore.Utils;
 import me.bkrmt.bkcore.message.InternalMessages;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import me.bkrmt.bkcore.xlibs.XMaterial;
+import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -171,23 +168,71 @@ public class Configuration extends YamlConfiguration {
     }
 
     public void setLocation(String path, Location location) {
-        set(path + ".world", location.getWorld().getName());
-        set(path + ".x", location.getX());
-        set(path + ".y", location.getY());
-        set(path + ".z", location.getZ());
-        set(path + ".pitch", location.getPitch());
-        set(path + ".yaw", location.getYaw());
+        if (location != null) {
+            World world = location.getWorld();
+            if (world == null) {
+                world = Bukkit.getWorld("world");
+                plugin.sendConsoleMessage(InternalMessages.INVALID_WORLD.getMessage(plugin)
+                    .replace("{0}", "§c[§4" + plugin.getName() + "§c]")
+                    .replace("{1}", String.valueOf(get(path + ".world")))
+                    .replace("{2}", "world")
+                    .replace("{3}", file.getAbsolutePath())
+                    .replace("{4}", path + ".world")
+                );
+                if (world == null) {
+                    world = Bukkit.getWorlds().get(0);
+                    plugin.sendConsoleMessage(InternalMessages.INVALID_WORLD.getMessage(plugin)
+                        .replace("{0}", "§c[§4" + plugin.getName() + "§c]")
+                        .replace("{1}", "world")
+                        .replace("{2}", world.getName())
+                        .replace("{3}", file.getAbsolutePath())
+                        .replace("{4}", path + ".world")
+                    );
+                }
+            }
+            set(path + ".world", world.getName());
+            set(path + ".x", location.getX());
+            set(path + ".y", location.getY());
+            set(path + ".z", location.getZ());
+            set(path + ".pitch", location.getPitch());
+            set(path + ".yaw", location.getYaw());
+        } else {
+            plugin.sendConsoleMessage(InternalMessages.INVALID_LOCATION.getMessage(plugin)
+                .replace("{0}", "§c[§4" + plugin.getName() + "§c]")
+                .replace("{1}", file.getAbsolutePath())
+                .replace("{2}", path + ".world")
+            );
+        }
     }
 
     public Location getLocation(String path) {
-        if (getString(path + ".world") == null) {
-            return null;
+        String worldName = get(path + ".world") == null ? "world" : getString(path + ".world");
+        World world = Bukkit.getWorld(worldName);
+        if (world == null) {
+            world = Bukkit.getWorld("world");
+            plugin.sendConsoleMessage(InternalMessages.INVALID_WORLD.getMessage(plugin)
+                .replace("{0}", "§c[§4" + plugin.getName() + "§c]")
+                .replace("{1}", String.valueOf(get(path + ".world")))
+                .replace("{2}", "world")
+                .replace("{3}", file.getAbsolutePath())
+                .replace("{4}", path + ".world")
+            );
+            if (world == null) {
+                world = Bukkit.getWorlds().get(0);
+                plugin.sendConsoleMessage(InternalMessages.INVALID_WORLD.getMessage(plugin)
+                    .replace("{0}", "§c[§4" + plugin.getName() + "§c]")
+                    .replace("{1}", "world")
+                    .replace("{2}", world.getName())
+                    .replace("{3}", file.getAbsolutePath())
+                    .replace("{4}", path + ".world")
+                );
+            }
         }
-        return new Location(Bukkit.getWorld(getString(path + ".world")), getDouble(path + ".x"), getDouble(path + ".y"), getDouble(path + ".z"), (float) getDouble(path + ".yaw"), (float) getDouble(path + ".pitch"));
+        return new Location(world, getDouble(path + ".x"), getDouble(path + ".y"), getDouble(path + ".z"), (float) getDouble(path + ".yaw"), (float) getDouble(path + ".pitch"));
     }
 
     public void setItemStack(String path, ItemStack item) {
-        if (item == null || item.getType().equals(Material.AIR)) {
+        if (item == null || item.getType().equals(XMaterial.AIR.parseMaterial())) {
             return;
         }
         if (plugin.getNmsVer().number < 13) {
@@ -279,7 +324,7 @@ public class Configuration extends YamlConfiguration {
         for (String l : getStringList(path + ".lore")) {
             lore.add(Utils.translateColor(l));
         }
-        if (item.getType().equals(Material.POTION) /*|| item.getType().equals(Utils.getMaterial("Material.LINGERING_POTION) || item.getType().equals(Utils.getMaterial("Material.SPLASH_POTION) || item.getType().equals(Utils.getMaterial("Material.TIPPED_ARROW)*/) {
+        if (item.getType().equals(XMaterial.POTION.parseMaterial()) /*|| item.getType().equals(Utils.getMaterial("Material.LINGERING_POTION) || item.getType().equals(Utils.getMaterial("Material.SPLASH_POTION) || item.getType().equals(Utils.getMaterial("Material.TIPPED_ARROW)*/) {
             PotionMeta meta = (PotionMeta) item.getItemMeta();
             meta.setBasePotionData(new PotionData(PotionType.valueOf(getString(path + ".potionmeta.type")), getBoolean(path + ".potionmeta.isextended"), getBoolean(path + ".potionmeta.isupgraded")));
             item.setItemMeta(meta);
@@ -304,9 +349,9 @@ public class Configuration extends YamlConfiguration {
         }
         if (getString(path + ".name") != null) {
             if (ChatColor.stripColor(getString(path + ".name").replace("&", "§")).equals(item.getType().toString())) {
-                ItemManager.setLore(item, lore);
+                setLore(item, lore);
             } else {
-                ItemManager.setNameAndLore(item, Utils.translateColor(getString(path + ".name")), lore);
+                setNameAndLore(item, Utils.translateColor(getString(path + ".name")), lore);
             }
         }
         return item;
@@ -326,5 +371,24 @@ public class Configuration extends YamlConfiguration {
                     ));
             Bukkit.getPluginManager().disablePlugin(plugin);
         }
+    }
+
+    private static ItemStack setLore(ItemStack item, List<String> lore) {
+        ItemMeta im = item.getItemMeta();
+        List<String> il = new ArrayList<>();
+        for (String l : lore) {
+            il.add(l);
+        }
+        im.setLore(il);
+        item.setItemMeta(im);
+        return item;
+    }
+
+    private static ItemStack setNameAndLore(ItemStack item, String name, List<String> il) {
+        ItemMeta im = item.getItemMeta();
+        im.setDisplayName(name);
+        im.setLore(il);
+        item.setItemMeta(im);
+        return item;
     }
 }

@@ -1,5 +1,6 @@
 package me.bkrmt.bkcore;
 
+import me.bkrmt.bkcore.xlibs.XMaterial;
 import me.bkrmt.nms.v1_16_R1.ColorUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
@@ -336,6 +337,25 @@ public class Utils {
         return argsString;
     }
 
+    public static String stripAccents(String text) {
+        text = Normalizer.normalize(text, Normalizer.Form.NFD);
+        text = text.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+        return text;
+    }
+
+    public static String fixLineColor(String text) {
+        String[] textParts = text.split(" ");
+        StringBuilder fixedText = null;
+        if (textParts.length > 0) {
+            fixedText = new StringBuilder(textParts[0]).append(" ");
+            for (int i = 1; i < textParts.length; i++) {
+                fixedText.append(ChatColor.getLastColors(fixedText.toString())).append(textParts[i]).append(" ");
+            }
+        }
+        return fixedText == null ? text : fixedText.toString();
+    }
+
+
     public static ItemStack createItem(BkPlugin plugin, String name, Material material, Object... lore) {
         ArrayList<String> loreList = new ArrayList<>();
         Collections.addAll(loreList, objectToString(lore));
@@ -413,15 +433,15 @@ public class Utils {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
-    public static ItemStack createItem(BkPlugin plugin, String name, Material material, ArrayList<String> lore) {
+    public static ItemStack createItem(BkPlugin plugin, String name, XMaterial material, ArrayList<String> lore) {
         ItemStack item = null;
         if (ChatColor.stripColor(name).contains(ChatColor.stripColor(plugin.getLangFile().get("info.next-name"))) ||
                 ChatColor.stripColor(name).contains(ChatColor.stripColor(plugin.getLangFile().get("info.return-name")))) {
             if (ChatColor.stripColor(name).contains(ChatColor.stripColor(plugin.getLangFile().get("info.next-name"))))
-                item = plugin.getHandler().getItemManager().getGreenPane();
-            else item = plugin.getHandler().getItemManager().getRedPane();
-        } else if (material.equals(plugin.getHandler().getItemManager().getHead().getType())) {
-            item = plugin.getHandler().getItemManager().getHead();
+                item = XMaterial.GREEN_STAINED_GLASS_PANE.parseItem();
+            else item = XMaterial.RED_STAINED_GLASS_PANE.parseItem();
+        } else if (material.equals(XMaterial.PLAYER_HEAD)) {
+            item = XMaterial.PLAYER_HEAD.parseItem();
             SkullMeta headMeta = (SkullMeta) item.getItemMeta();
             headMeta = plugin.getHandler().getMethodManager().setHeadOwner(headMeta, plugin.getServer().getOfflinePlayer(ChatColor.stripColor(name)));
             headMeta.setDisplayName(name);
@@ -431,7 +451,7 @@ public class Utils {
             item.setItemMeta(headMeta);
             return item;
         }
-        if (item == null) item = new ItemStack(material, 1);
+        if (item == null) item = material.parseItem();
         ItemMeta itemMeta = item.getItemMeta();
         itemMeta.setDisplayName(name.trim());
         if (!lore.isEmpty()) itemMeta.setLore(lore);

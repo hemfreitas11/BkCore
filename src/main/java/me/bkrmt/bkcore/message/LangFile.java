@@ -21,6 +21,7 @@ public class LangFile {
     private final Configuration langConfig;
     private ConcurrentHashMap<String, String> messages;
     private ConcurrentHashMap<String, List<String>> lists;
+    private TimeLocale timeLocale;
 
     public LangFile(BkPlugin plugin, ArrayList<String> langList) {
         this.plugin = plugin;
@@ -46,6 +47,12 @@ public class LangFile {
         }
 
         loadMessages();
+
+        this.timeLocale = new TimeLocale(plugin);
+    }
+
+    public TimeLocale getTimeLocale() {
+        return timeLocale;
     }
 
     private Configuration createConfig(String language) {

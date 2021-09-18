@@ -13,7 +13,7 @@ import java.util.Iterator;
 public abstract class Executor implements CommandExecutor {
     private final String name;
     private final String description;
-    private final String usage;
+    private String usage;
     private final String permission;
     private final BkPlugin plugin;
     private final String langKey;
@@ -22,9 +22,25 @@ public abstract class Executor implements CommandExecutor {
     public Executor(BkPlugin plugin, String langKey, String permission) {
         this.plugin = plugin;
         this.langKey = langKey;
-        this.name = plugin.getLangFile().get("commands." + langKey + ".command");
-        this.description = plugin.getLangFile().get("commands." + langKey + ".description");
-        this.usage = plugin.getLangFile().get("commands." + langKey + ".usage");
+        if (langKey.contains("bkcommand")) {
+            this.name = plugin.getName().toLowerCase();
+            this.description = "&7Shows the help of the plugin, and opens the config editor.";
+            this.usage = "/" + name + " [";
+            ConfigurationSection subCommands = plugin.getLangFile().getConfig().getConfigurationSection("commands.bkcommand.subcommands");
+            Iterator<String> iterator = subCommands.getKeys(false).iterator();
+            StringBuilder usageBuilder = new StringBuilder(usage);
+            while (iterator.hasNext()) {
+                String key = iterator.next();
+                usageBuilder.append(subCommands.get(key + ".command"));
+                if (iterator.hasNext()) usageBuilder.append(" | ");
+                else usageBuilder.append("]");
+            }
+            this.usage = usageBuilder.toString();
+        } else {
+            this.name = plugin.getLangFile().get("commands." + langKey + ".command");
+            this.description = plugin.getLangFile().get("commands." + langKey + ".description");
+            this.usage = plugin.getLangFile().get("commands." + langKey + ".usage");
+        }
         this.permissionMessage = plugin.getLangFile().get("error.no-permission");
         this.permission = permission;
     }
