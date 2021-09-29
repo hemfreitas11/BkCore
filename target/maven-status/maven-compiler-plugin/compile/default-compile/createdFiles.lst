@@ -23,6 +23,7 @@ me\bkrmt\bkcore\Time.class
 me\bkrmt\bkcore\Utils.class
 me\bkrmt\bkcore\xlibs\XSound$Record.class
 me\bkrmt\bkcore\command\CommandModule.class
+me\bkrmt\bkcore\config\InvalidLocationException.class
 me\bkrmt\bkcore\xlibs\XMaterial$Data.class
 me\bkrmt\bkcore\command\MainCommand.class
 me\bkrmt\bkcore\message\TimeLocale.class

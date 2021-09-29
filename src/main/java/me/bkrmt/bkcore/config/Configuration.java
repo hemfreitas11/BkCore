@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -205,28 +206,18 @@ public class Configuration extends YamlConfiguration {
         }
     }
 
-    public Location getLocation(String path) {
+    public Location getLocation(String path) throws InvalidLocationException {
         String worldName = get(path + ".world") == null ? "world" : getString(path + ".world");
         World world = Bukkit.getWorld(worldName);
         if (world == null) {
-            world = Bukkit.getWorld("world");
-            plugin.sendConsoleMessage(InternalMessages.INVALID_WORLD.getMessage(plugin)
-                .replace("{0}", "§c[§4" + plugin.getName() + "§c]")
-                .replace("{1}", String.valueOf(get(path + ".world")))
-                .replace("{2}", "world")
-                .replace("{3}", file.getAbsolutePath())
-                .replace("{4}", path + ".world")
-            );
-            if (world == null) {
-                world = Bukkit.getWorlds().get(0);
-                plugin.sendConsoleMessage(InternalMessages.INVALID_WORLD.getMessage(plugin)
-                    .replace("{0}", "§c[§4" + plugin.getName() + "§c]")
-                    .replace("{1}", "world")
-                    .replace("{2}", world.getName())
-                    .replace("{3}", file.getAbsolutePath())
-                    .replace("{4}", path + ".world")
-                );
+            StringBuilder loadedBuilder = new StringBuilder();
+            Iterator<World> iterator = Bukkit.getWorlds().iterator();
+            while (iterator.hasNext()) {
+                loadedBuilder.append(iterator.next().getName());
+                if (iterator.hasNext()) loadedBuilder.append(", ");
+                else loadedBuilder.append(".");
             }
+            throw new InvalidLocationException("Tried to get invalid world \"" + worldName +"\" from file " + getFile().getName() + " in path \"" + path + "\". Currently loaded worlds: " + loadedBuilder);
         }
         return new Location(world, getDouble(path + ".x"), getDouble(path + ".y"), getDouble(path + ".z"), (float) getDouble(path + ".yaw"), (float) getDouble(path + ".pitch"));
     }

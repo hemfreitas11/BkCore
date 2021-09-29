@@ -232,6 +232,13 @@ public class Utils {
         }
     }
 
+    public static boolean containsEqual(List<String> list, String text) {
+        for (String line : list) {
+            if (line.equalsIgnoreCase(text)) return true;
+        }
+        return false;
+    }
+
     public static void sendPacket(Player player, Object packet) {
         try {
             Object handle = player.getClass().getMethod("getHandle").invoke(player);
